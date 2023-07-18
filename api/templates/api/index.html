@@ -13,10 +13,27 @@
         <input type="file" name="file">
         <button type="submit">Загрузить</button>
     </form>
+
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if files_info %}
+        <h2>Список загруженных файлов:</h2>
+        <ul>
+            {% for file_info in files_info %}
+                <li>
+                    <b>Имя файла:</b> {{ file_info.file_name }}
+                    <ul>
+                        {% for column_name in file_info.column_names %}
+                            <li>{{ column_name }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}

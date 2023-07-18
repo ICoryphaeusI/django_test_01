@@ -4,8 +4,7 @@ from django.contrib import messages
 import pandas as pd
 import chardet
 import io
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+import os
 
 # Create your views here.
 
@@ -15,6 +14,8 @@ def create_db(file_data):
 
     file_data = file_data.decode(encoding)
     df = pd.read_csv(io.StringIO(file_data), delimiter=',')
+    column_names = df.columns.tolist()  # Get the list of column names
+    return column_names
 
 def index(request):
     if request.method == 'POST':
@@ -24,17 +25,34 @@ def index(request):
         file_path = 'files/' + file_name
 
         if file_extension != 'csv':
-            messages.warning(request, 'Только файлы с расширением CSV разрешены.')
+            messages.warning(request, 'Only CSV files are allowed.')
         else:
-            # Удаление существующего файла, если он есть
-            if default_storage.exists(file_path):
-                default_storage.delete(file_path)
+            # Save the uploaded file
+            with open(file_path, 'wb') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
 
-            # Сохранение нового файла
-            default_storage.save(file_path, ContentFile(file.read()))
+            # Read the file and call create_db() function
+            with open(file_path, 'rb') as file:
+                column_names = create_db(file.read())
+                file_info = {'file_name': file_name, 'column_names': column_names}
+                files_info = request.session.get('files_info', [])
+                files_info.append(file_info)
+                request.session['files_info'] = files_info
 
-            # Чтение файла и вызов функции create_db()
-            with default_storage.open(file_path) as file:
-                create_db(file.read())
+    files_info = []
 
-    return render(request, 'api/index.html')
+    # Get information about already downloaded files
+    folder_path = 'files/'
+    if os.path.exists(folder_path):
+        file_list = os.listdir(folder_path)
+        for file_name in file_list:
+            file_path = os.path.join(folder_path, file_name)
+            if os.path.isfile(file_path):
+                with open(file_path, 'rb') as file:
+                    column_names = create_db(file.read())
+                    file_info = {'file_name': file_name, 'column_names': column_names}
+                    files_info.append(file_info)
+
+    return render(request, 'api/index.html', {'files_info': files_info})
+    
