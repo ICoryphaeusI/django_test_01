@@ -1,8 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <title>Главная</title>
 </head>
 <body>
@@ -27,7 +30,7 @@
         <ul>
             {% for file_info in files_info %}
                 <li>
-                    <b>Имя файла:</b> {{ file_info.file_name }}
+                    <b>Имя файла:</b> <a href="{{ file_info.file_url }}">{{ file_info.file_name }}</a>
                     <ul>
                         {% for column_name in file_info.column_names %}
                             <li>{{ column_name }}</li>
