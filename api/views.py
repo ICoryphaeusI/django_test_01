@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import File
 from django.contrib import messages
 import pandas as pd
@@ -106,3 +106,14 @@ def file_detail(request, file_name):
             return render(request, 'api/file_detail.html', {'file_info': file_info})
     except FileNotFoundError:
         return render(request, 'api/error.html', {'error_message': 'File not found.'})
+
+def delete_file(request, file_name):
+    file_path = os.path.join('files', file_name)
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        messages.success(request, 'Файл успешно удален.')
+    else:
+        messages.error(request, 'Ошибка удаления файла: файл не найден.')
+
+    return redirect('api:index')

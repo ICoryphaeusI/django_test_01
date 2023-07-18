@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +30,16 @@
         <ul>
             {% for file_info in files_info %}
                 <li>
-                    <b>Имя файла:</b> <a href="{{ file_info.file_url }}">{{ file_info.file_name }}</a>
+                    <form method="get" action="{% url 'api:file_detail' file_info.file_name %}">
+                        <button type="submit">
+                            <a href="{{ file_info.file_url }}">{{ file_info.file_name }}</a>
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'api:delete_file' file_info.file_name %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="file_name" value="{{ file_info.file_name }}">
+                        <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить файл?')">Удалить</button>
+                    </form>
                     <ul>
                         {% for column_name in file_info.column_names %}
                             <li>{{ column_name }}</li>
