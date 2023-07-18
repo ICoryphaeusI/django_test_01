@@ -97,10 +97,18 @@ def file_detail(request, file_name):
 
             column_names = df.columns.tolist()
 
+            # Сводная статистика
+            summary_stats = df.describe()
+
+            # Подсчет значений для типов данных
+            type_counts = df.dtypes.value_counts().reset_index().rename(columns={'index': 'Type', 0: 'Count'})
+
             file_info = {
                 'file_name': file_name,
                 'column_names': column_names,
-                'file_data': df.to_html()  # Преобразуйте данные файла в HTML-таблицу или другой формат, если необходимо
+                'file_data': df.to_html(),
+                'summary_stats': summary_stats.to_html(),
+                'type_counts': type_counts.to_html(),
             }
 
             return render(request, 'api/file_detail.html', {'file_info': file_info})

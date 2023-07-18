@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 <body>
+    <a href="{% url 'api:index' %}">Назад к списку файлов</a>
     <h1>Имя файла: {{ file_info.file_name }}</h1>
+
+    <h2>Сводная статистика:</h2>
+    {{ file_info.summary_stats|safe }}
 
     <h2>Список столбцов:</h2>
     <ul>
