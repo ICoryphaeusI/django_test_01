@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <title>Регистрация</title>
+</head>
+<body>
+    <section>
+    <div class="form-box">   
+    <form method="post">
+        {% csrf_token %}
+        <h2>Регистрация</h2>
+        <div class="form-field1">
+            <label for="{{ form.username.id_for_label }}">Логин: </label>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-field2">
+            <label for="{{ form.password1.id_for_label }}">Пароль: </label>
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-field3">
+            <label for="{{ form.password2.id_for_label }}">Пароль x2: </label>
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-field4">
+            <label for="{{ form.email.id_for_label }}">Почта: </label>
+            {{ form.email }}
+            {% for error in form.email.errors %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% for error in form.non_field_errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+        <button type="submit">Зарегистрировать</button>
+        <div class="back">
+            <a href="{% url 'api:index' %}">
+                <ion-icon name="arrow-back-circle-outline"></ion-icon>
+            </a>
+        </div>
+    </form>
+    </div>
+    </section>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

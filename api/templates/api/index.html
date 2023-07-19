@@ -9,7 +9,13 @@
     <title>Главная</title>
 </head>
 <body>
-    <h1>Добро пожаловать</h1>
+    {% if user.is_authenticated %}
+    <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Выход</a></li>
+    <h1>Добро пожаловать, {{ user.username }}</h1>
+    {% else %}
+    <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Вход</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}">Регистрация</a></li>
+    {% endif %}
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
